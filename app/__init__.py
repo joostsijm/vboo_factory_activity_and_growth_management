@@ -16,14 +16,14 @@ load_dotenv()
 # database
 engine = create_engine(os.environ["DATABASE_URI"], client_encoding='utf8')
 Session = sessionmaker(bind=engine)
-session = Session()
 
 # scheduler
 scheduler = BackgroundScheduler()
 scheduler.start()
 
+# logging
 logging.basicConfig(
-    format='%(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 LOGGER = logging.getLogger(__name__)

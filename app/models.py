@@ -14,10 +14,11 @@ class Factory(Base):
     __tablename__ = 'factory'
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    resource_type = Column(SmallInteger)
 
     player_id = Column(BigInteger, ForeignKey('player.id'))
     player = relationship(
-        'User',
+        'Player',
         backref=backref('factories', lazy='dynamic')
     )
 
@@ -53,7 +54,7 @@ class FactoryStat(Base):
 
     factory_id = Column(Integer, ForeignKey('factory.id'))
     factory = relationship(
-        'FactoryTrack',
+        'Factory',
         backref=backref('factory_stats', lazy='dynamic')
     )
     factory_track_id = Column(Integer, ForeignKey('factory_track.id'))
@@ -68,12 +69,6 @@ class State(Base):
     __tablename__ = 'state'
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    regions = relationship(
-        'Region',
-        secondary='state_region',
-        backref=backref('states', lazy='dynamic'),
-        lazy='dynamic'
-    )
 
 
 class Region(Base):
