@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from app import Session
-from app.models import State, Player, Factory, FactoryTrack, FactoryStat
+from app.models import State, Region, Factory, FactoryTrack, FactoryStat, FactoryLocation
 
 
 def get_state(state_id):
@@ -32,9 +32,24 @@ def save_factories(state_id, factories):
         factory_stat.experience = factory_dict['experience']
         factory_stat.wage = factory_dict['wage']
         factory_stat.workers = factory_dict['workers']
-        factory_stat.factory_id = factory_dict['id']
+        factory_stat.factory_id = factory.id
         factory_stat.factory_track_id = factory_track.id
         session.add(factory_stat)
+
+        current_location = session.query(FactoryLocation) \
+            .filter(FactoryLocation.factory_id == factory.id) \
+            .filter(FactoryLocation.until_date_time == None).first()
+
+        if not current_location or current_location.region.name != factory_dict['region_name']:
+            region = session.query(Region) \
+                .filter(Region.name == factory_dict['region_name']).first()
+            factory_location = FactoryLocation()
+            factory_location.factory_id = factory.id
+            factory_location.region_id = region.id
+            factory_location.from_date_time = datetime.now()
+            session.add(factory_location)
+            if current_location:
+                current_location.until_date_time = datetime.now()
 
     session.commit()
     session.close()

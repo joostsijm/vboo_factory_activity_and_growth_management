@@ -40,8 +40,9 @@ class FactoryLocation(Base):
     __tablename__ = 'factory_location'
     factory_id = Column(Integer, ForeignKey('factory.id'), primary_key=True)
     region_id = Column(Integer, ForeignKey('region.id'), primary_key=True)
-    from_date_time = Column(DateTime)
+    from_date_time = Column(DateTime, primary_key=True)
     until_date_time = Column(DateTime)
+    region = relationship('Region')
 
 class FactoryStat(Base):
     """Model for factory"""

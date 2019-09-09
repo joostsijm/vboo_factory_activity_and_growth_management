@@ -25,7 +25,7 @@ def job_update_factories(state_id):
     LOGGER.info('"%s": get factories', state.name)
     factories = get_factories(state.id)
     LOGGER.info('"%s": "%s" factories', state.name, len(factories))
-    print_factories(factories)
+    # print_factories(factories)
     save_factories(state.id, factories)
     LOGGER.info('"%s": done saving factories', state.name)
 
@@ -38,13 +38,13 @@ def add_update_factories(state_id):
         args=[state_id],
         id='factories_{}'.format(state_id),
         replace_existing=True,
-        hour='2'
+        hour='2,14'
     )
 
 if __name__ == '__main__':
-    # jobs
-    job_update_factories(2788)
+    # job_update_factories(2788)
 
+    # jobs
     # Verenigde Nederlanden
     add_update_factories(2788)
     # Belgium

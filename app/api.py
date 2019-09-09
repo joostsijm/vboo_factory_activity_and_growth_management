@@ -19,8 +19,8 @@ TYPES = {
 
 def get_factories(state_id):
     """Get factories from state"""
-    return read_factories()
-    # return download_factories(state_id)
+    # return read_factories()
+    return download_factories(state_id)
 
 def read_factories():
     """Read factories file"""
