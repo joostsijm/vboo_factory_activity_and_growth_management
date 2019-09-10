@@ -50,10 +50,14 @@ def parse_factories(html):
     factories = []
     for factory_tree in factories_tree:
         columns = factory_tree.find_all('td')
+        if columns[1].contents[4].name == 'span':
+            resource_type = TYPES[columns[1].contents[4]['class'][0]]
+        else:
+            resource_type = None
         factories.append({
             'id': factory_tree['user'],
             'name': columns[1].contents[0].strip(),
-            'resource_type': TYPES[columns[1].contents[4]['class'][0]],
+            'resource_type': resource_type,
             'region_name': columns[1].contents[2],
             'level': columns[2].string,
             'workers': re.sub(r'\/[0-9]*$', '', columns[3].string),
