@@ -79,6 +79,20 @@ class Region(Base):
     name = Column(String)
 
 
+class StateRegion(Base):
+    """Model for state region"""
+    __tablename__ = 'state_region'
+    state_id = Column(Integer, ForeignKey('state.id'), primary_key=True)
+    from_date_time = Column(DateTime, primary_key=True)
+    until_date_time = Column(DateTime)
+
+    region_id = Column(Integer, ForeignKey('region.id'), primary_key=True)
+    region = relationship(
+        'Region',
+        backref=backref('state_regions', lazy='dynamic')
+    )
+
+
 class Player(Base):
     """Model for player"""
     __tablename__ = 'player'
