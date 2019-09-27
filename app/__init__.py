@@ -14,12 +14,17 @@ from app.models import Base, State, Region, Player
 load_dotenv()
 
 # database
-engine = create_engine(os.environ["DATABASE_URI"], client_encoding='utf8')
-Session = sessionmaker(bind=engine)
+ENGINE = create_engine(os.environ["DATABASE_URI"], client_encoding='utf8')
+SESSION = sessionmaker(bind=ENGINE)
 
 # scheduler
-scheduler = BackgroundScheduler()
-scheduler.start()
+SCHEDULER = BackgroundScheduler(
+    daemon=True,
+    job_defaults={
+    	'misfire_grace_time': 900
+    },
+)
+SCHEDULER.start()
 
 # logging
 logging.basicConfig(

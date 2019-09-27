@@ -17,10 +17,10 @@ TYPES = {
     'diamond': 15,
 }
 
-def get_factories(state_id):
+def get_factories(region_id):
     """Get factories from state"""
     # return read_factories()
-    return download_factories(state_id)
+    return download_factories(region_id)
 
 def read_factories():
     """Read factories file"""
@@ -28,14 +28,14 @@ def read_factories():
         factories, more = parse_factories(file)
         return factories
 
-def download_factories(state_id):
+def download_factories(region_id):
     """Download the factories"""
     factories = []
     more = True
     page = 0
     while more:
         response = requests.get(
-            '{}factory/state/{}/0/0/{}'.format(BASE_URL, state_id, page*25),
+            '{}factory/search/{}/0/0/{}'.format(BASE_URL, region_id, page*25),
             headers=HEADERS
         )
         tmp_factories, more = parse_factories(response.text)
