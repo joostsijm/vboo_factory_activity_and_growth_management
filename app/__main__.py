@@ -24,7 +24,6 @@ def job_update_factories(state_id):
         factories = get_factories(region.id)
         LOGGER.info('"%s": "%s" factories', region.name, len(factories))
         factory_list += factories
-        print_factories(factories)
 
     save_factories(state_id, factory_list)
     LOGGER.info('"%s": done saving factories', state.name)

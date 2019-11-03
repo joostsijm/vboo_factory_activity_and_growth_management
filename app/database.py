@@ -56,7 +56,7 @@ def save_factories(state_id, factories):
 
         if not current_location or current_location.region_id != factory_dict['region_id']:
             region = session.query(Region) \
-                .filter(Region.name == factory_dict['region_name']).first()
+                .filter(Region.id == factory_dict['region_id']).first()
             factory_location = FactoryLocation()
             factory_location.factory_id = factory.id
             factory_location.region_id = region.id
@@ -74,6 +74,5 @@ def save_factory(session, factory_dict):
     factory = Factory()
     factory.id = factory_dict['id']
     factory.name = factory_dict['name']
-    factory.resource_type = factory_dict['resource_type']
     session.add(factory)
     return factory
