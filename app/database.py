@@ -2,20 +2,34 @@
 
 from datetime import datetime
 
-from app import Session
-from app.models import State, Region, Factory, FactoryTrack, FactoryStat, FactoryLocation
+from app import SESSION
+from app.models import State, Region, StateRegion, \
+    Factory, FactoryTrack, FactoryStat, FactoryLocation
 
 
 def get_state(state_id):
     """Get regions from state"""
-    session = Session()
+    session = SESSION()
     state = session.query(State).get(state_id)
     session.close()
     return state
 
+def get_regions(state_id):
+    """Get region from state"""
+    session = SESSION()
+    state_regions = session.query(StateRegion) \
+        .filter(StateRegion.state_id == state_id) \
+        .filter(StateRegion.until_date_time == None) \
+        .all()
+    regions = []
+    for state_region in state_regions:
+        regions.append(state_region.region)
+    session.close()
+    return regions
+
 def save_factories(state_id, factories):
     """Save factories to database"""
-    session = Session()
+    session = SESSION()
     session.close()
 
     factory_track = FactoryTrack()
@@ -40,9 +54,9 @@ def save_factories(state_id, factories):
             .filter(FactoryLocation.factory_id == factory.id) \
             .filter(FactoryLocation.until_date_time == None).first()
 
-        if not current_location or current_location.region.name != factory_dict['region_name']:
+        if not current_location or current_location.region_id != factory_dict['region_id']:
             region = session.query(Region) \
-                .filter(Region.name == factory_dict['region_name']).first()
+                .filter(Region.id == factory_dict['region_id']).first()
             factory_location = FactoryLocation()
             factory_location.factory_id = factory.id
             factory_location.region_id = region.id
@@ -60,6 +74,5 @@ def save_factory(session, factory_dict):
     factory = Factory()
     factory.id = factory_dict['id']
     factory.name = factory_dict['name']
-    factory.resource_type = factory_dict['resource_type']
     session.add(factory)
     return factory

@@ -17,50 +17,45 @@ TYPES = {
     'diamond': 15,
 }
 
-def get_factories(state_id):
+def get_factories(region_id):
     """Get factories from state"""
     # return read_factories()
-    return download_factories(state_id)
+    return download_factories(region_id)
 
 def read_factories():
     """Read factories file"""
-    with open('factories.html') as file:
-        factories, more = parse_factories(file)
+    with open('factories_4001.html') as file:
+        factories, more = parse_factories(file, 4001)
         return factories
 
-def download_factories(state_id):
+def download_factories(region_id):
     """Download the factories"""
     factories = []
     more = True
     page = 0
     while more:
         response = requests.get(
-            '{}factory/state/{}/0/0/{}'.format(BASE_URL, state_id, page*25),
+            '{}factory/search/{}/0/0/{}'.format(BASE_URL, region_id, page*25),
             headers=HEADERS
         )
-        tmp_factories, more = parse_factories(response.text)
+        tmp_factories, more = parse_factories(response.text, region_id)
         factories = factories + tmp_factories
         page += 1
     return factories
 
-def parse_factories(html):
+def parse_factories(html, region_id):
     """Parse html return factories"""
     soup = BeautifulSoup(html, 'html.parser')
     factories_tree = soup.find_all(class_='list_link')
     factories = []
     for factory_tree in factories_tree:
         columns = factory_tree.find_all('td')
-        if columns[1].contents[4].name == 'span':
-            resource_type = TYPES[columns[1].contents[4]['class'][0]]
-        else:
-            resource_type = None
         factories.append({
-            'id': factory_tree['user'],
+            'region_id': region_id,
+            'id': int(factory_tree['user']),
             'name': columns[1].contents[0].strip(),
-            'resource_type': resource_type,
-            'region_name': columns[1].contents[2],
-            'level': columns[2].string,
-            'workers': re.sub(r'\/[0-9]*$', '', columns[3].string),
+            'level': int(columns[2].string),
+            'workers': int(re.sub(r'\/[0-9]*$', '', columns[3].string)),
             'wage': int(columns[4].string.replace('%', '')),
             'experience': int(columns[5].string),
         })
